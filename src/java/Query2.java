@@ -23,6 +23,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import varios.ImpresorHTML;
+import varios.ErrorHandlerEx;
 
 
 /**
@@ -58,11 +59,10 @@ public class Query2 extends HttpServlet {
         String paisId = "" ;
         String equipo = "";
         String equipoId = "";
-        ImpresorHTML impresor = new ImpresorHTML();
         
     
         body = getBody(request);
-        
+        System.out.println("body:" + body);
         Object obj; 
                         try {
                             obj = new JSONParser().parse(body);
@@ -71,10 +71,14 @@ public class Query2 extends HttpServlet {
                             paisId = (String) jo.get("pais");
                             equipo = (String) jo.get("equipo");
                             equipoId = (String) jo.get("equipo_id");
-                                                                                 
+                            
+                            ValidaData(out, paisId, equipo, equipoId);
+                            
                             } catch (ParseException ex) {
                             Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, ex);
+                            throw new ErrorHandlerEx(out,"1");
                                                         }
+                             
         try {
       
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();      
@@ -91,13 +95,16 @@ public class Query2 extends HttpServlet {
         
         session.getTransaction().commit();  
         
-            } catch (Exception ex) {
+            } catch (Exception ex)       {
               Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, ex);
               
-                                                        }        
-        impresor.imprimir(out, "green", "El equipo fue dado de alta", "API rest");
-                
-        }
+                                         }  
+        out.println("El equipo fue dado de alta");
+       
+        } catch (ErrorHandlerEx e1) {
+          Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, e1);
+          System.out.println("Error:" + e1.getMsg());
+                                                        }
         
     }
 
@@ -138,5 +145,13 @@ public class Query2 extends HttpServlet {
     return body;
 }
     
+    
+    public void ValidaData(PrintWriter salida, String pais, String equipo, String equipo_id)
+            throws ErrorHandlerEx{
+        
+        if ( pais.equals("") || equipo.equals("") || equipo_id.equals(""))
+        throw new ErrorHandlerEx(salida);
+        
+    }
     
 }

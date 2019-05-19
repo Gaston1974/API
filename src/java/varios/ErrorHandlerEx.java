@@ -16,6 +16,7 @@ public class ErrorHandlerEx extends Exception {
     private int codigo = 0;
     private String msg = "";
     
+    
     public ErrorHandlerEx(PrintWriter salida, int codigo) {
         
         this.codigo = codigo;
@@ -23,6 +24,19 @@ public class ErrorHandlerEx extends Exception {
     }   
     
     
+    public ErrorHandlerEx(PrintWriter salida) {
+        
+        salida.println("algunos de los campos requeridos no tiene valor");
+        msg = "falla debido a campos con valor nulo";
+    }   
+    
+    public ErrorHandlerEx(PrintWriter salida, String valor) {
+        
+        salida.println("falla al paresear el JSON, Revice la estructura");
+        msg = "falla al paresear el JSON";
+    } 
+        
+        
     public void EnviarMsg(PrintWriter salida) {
       
         switch (codigo) {

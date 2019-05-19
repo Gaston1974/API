@@ -44,8 +44,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.simple.JSONObject;
 import entidades.Jugador;
 import org.json.simple.JSONArray;
-//import javax.servlet.*;
+import varios.ErrorHandlerEx;
 
+//import javax.servlet.*;
 
 
 /**
@@ -82,7 +83,6 @@ public class Query extends HttpServlet {
         String opcion = "0";
         Fequipo eq = new Fequipo();
         Leedor leedor = new Leedor();
-        ImpresorHTML impresor = new ImpresorHTML();
         List<String> valores = null ;
         int i = 0;
         int statusCode = 0;
@@ -101,13 +101,20 @@ public class Query extends HttpServlet {
                    
                 // param = busco id ( API FUTBOL ) del equipo en la base
                 int opc = Integer.parseInt(opcion);
+                
+                try {
+                    
                 eq = (Fequipo) session.getNamedQuery("Select_equipoId").setInteger(0, opc).uniqueResult();
                 String param = eq.getApi_id(); 
                 String key = "&APIkey=3181aba25e0ededb5fa60883bd351da54315e3395abfbee8ab8cf6f768c63751";
-                
-                
+                                
                 statusCode = sendGet(param, key);
-                                                         // MANEJO DE ERROR: le doy el codigo http y result de la consulta
+                
+                } catch (Exception ex) {
+                Logger.getLogger(Query.class.getName()).log(Level.SEVERE, null, ex);
+                throw new ErrorHandlerEx( out, 201 );
+                                       }
+                             
                              
         session.getTransaction().commit();    
         
@@ -132,9 +139,12 @@ public class Query extends HttpServlet {
                 JSONArray ja = (JSONArray) jo.get("result"); 
                 Iterator itr2 = ja.iterator(); 
                 
-                // if ( !itr2.hasNext() ) 
-                //  Error Manager 
-                // else {
+                if ( !itr2.hasNext() && statusCode == 200 ) 
+                    fwtr1.write("{\n no hay jugadores para el equipo elegido }" ); 
+                else if ( statusCode != 200 )
+                    throw new ErrorHandlerEx(out, statusCode);
+                else {
+                
                 while (itr2.hasNext())  { 
                 itr1 = ((Map) itr2.next()).entrySet().iterator(); 
                        while (itr1.hasNext()) { 
@@ -161,8 +171,12 @@ public class Query extends HttpServlet {
                 fwtr1.write("\n]\n}");
                 fwtr1.close();    
 		leedor.leer(out, "/home/gaston/javaAPI_REST/API_REST/web/WEB-INF/jugadores.json" );
-                
-        }   catch (Exception ex) {
+            }  
+        }   catch (ErrorHandlerEx e1) {
+                Logger.getLogger(Query.class.getName()).log(Level.SEVERE, null, e1);
+                System.out.println("Excepcion:" + e1.getMsg());
+            }
+            catch (Exception ex) {
                 Logger.getLogger(Query.class.getName()).log(Level.SEVERE, null, ex);
             }
                     

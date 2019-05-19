@@ -55,16 +55,16 @@ public class Jugador {
         return 
                 
                 " \n{ \n" +
-                "   playerKey : " + playerKey + " ,\n" +
-                "   playerName : " + playerName + " ,\n" +
-                "   playerNumber : " + playerNumber +  ", \n" +
-                "   playerCountry : " + playerCountry + ", \n" +
-                "   playerType : " + playerType + ", \n" +
-                "   playerAge : " + playerAge + ", \n" +
-                "   playerMatchPlayed : " + playerMatchPlayed + ", \n" +
-                "   playerGoals : " + playerGoals + ", \n" +
-                "   playerYellowCards : " + playerYellowCards + ", \n" +
-                "   playerRedCards :" + playerRedCards + ", \n" +
+                "   \"playerKey\" : " + playerKey + ",\n" +
+                "   \"playerName\" : \"" + playerName + "\",\n" +
+                "   \"playerNumber\" : " + playerNumber +  ", \n" +
+                "   \"playerCountry\" : \"" + playerCountry + "\", \n" +
+                "   \"playerType\" : \"" + playerType + "\", \n" +
+                "   \"playerAge\" : " + playerAge + ", \n" +
+                "   \"playerMatchPlayed\" : " + playerMatchPlayed + ", \n" +
+                "   \"playerGoals\" : " + playerGoals + ", \n" +
+                "   \"playerYellowCards\" : " + playerYellowCards + ", \n" +
+                "   \"playerRedCards\" : " + playerRedCards + ", \n" +
                 " } ";
                 
     }

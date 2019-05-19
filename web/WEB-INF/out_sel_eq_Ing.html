@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<html>
+<head>
+<title>API_REST</title>
+</head>
+<body>
+	<br><br><br><br><br><br><br><br><br><br>
+	<form name="Form" value="select" action="http://localhost:8084/API_REST/Query" method="get">
+	<label><p align=center><font size=2 face="helvetica"> <b>Seleccione el equipo.</b></p></label><br><br>
+
+	<table style="margin: 0 auto;" width="200" cellspacing="1" cellpadding="3" border="0" bgcolor="#80A93E">
+	<tr>
+   	<td bgcolor="#B7F259"><font size=1 face="verdana, arial, helvetica"><b>Equipos</b></font></td>
+	</tr>
+	<tr>
+   	<td bgcolor="#F5ECB9"> 
+
+	<table width="95%" cellspacing="1" cellpadding="1" border="0" align=center>
+     
+	<tr>
+   	<td><font face="verdana, arial, helvetica" size=1> 
+	<div>
+    <label for="equipos">EQUIPO :</label><br><br>
+        <select name="teams">
+    	   <option value="1">Chelsea</option>
+    	   <option value="2">Arsenal</option>
+           <option value="3">Swansea</option>
+           <option value="4">Crystal Palace</option>
+           <option value="5">West Ham</option>
+           <option value="6">Liverpool</option>
+           <option value="7">Huddersfield</option>
+           <option value="8">Watford</option>
+  	</select>   
+       </div>	
+	</font></td> 	
+	</tr>
+
+
+</table>
+</td>
+</tr>
+</table> 
+	<br>
+	<input style="margin-left: 670px" size=2 type="submit" name="request" value="Consultar_equipo" >
+</form>
+</body>
+</html>

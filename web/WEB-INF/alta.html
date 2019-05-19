@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.   src="https://code.jquery.com/jquery-1.10.2.js">
+-->
+<html>
+    <head> 
+        <script
+                 src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js">
+        </script>  
+    </head>
+    <body>
+        <br><br><br><br><br><br><br><br><br><br>
+        <form id="user-form">
+            <table align=center>
+                <tr>
+                    <td> Id del pais: </td>
+                    <td><input type="text" name="pais"/></td>
+                </tr>
+                <tr>
+                    <td> Nombre del equipo:</td>
+                    <td><input type="text" name="equipo"/></td>
+                </tr>
+                <tr>
+                    <td> Id del equipo en la API REST sportApi:</td>
+                    <td><input type="text" name="equipo_id"/></td>
+                </tr>
+            </table>
+            <input style="margin-left: 670px" size=2  type="submit" value="Alta"/>
+        </form>
+
+        <div id="msg"></div>
+
+        <script>
+            $("#user-form").submit(function (event) {
+                event.preventDefault();
+                var $form = $(this);
+                var url = 'http://localhost:8084/API_REST/Query2';
+                var idPais = $form.find('input[name="pais"]').val();
+                var equipo = $form.find('input[name="equipo"]').val();
+                var equipoId = $form.find('input[name="equipo_id"]').val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    datatype: "text",
+                    contentType: 'application/json',
+                    data: JSON.stringify({pais: idPais, equipo: equipo, equipo_id: equipoId }),
+                    success: function(response){
+                        //if request if made successfully then the response represent the data
+                        $( "#msg" ).empty().append( response );
+                      }  
+/*                      success: function (data, status, xhr) {
+                        window.location.replace("http://localhost:8084/API_REST/Query2");
+                    },
+                    error: function (xhr, status, error) {
+                        $('#msg').html('<span style=\'color:red;\'>' + error + '</span>')
+                    } */
+                });
+            });
+
+        </script>
+    </body>
+</html>

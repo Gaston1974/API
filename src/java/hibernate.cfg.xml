@@ -47,7 +47,6 @@ Contributor(s):
     <property name="hibernate.connection.username">gaston</property>
     <property name="hibernate.connection.password">gaston</property>
     <property name="hibernate.current_session_context_class">thread</property>
-    <mapping class="entidades.TbCliente"/>
     <mapping class="entidades.Fequipo"/>
     <mapping class="entidades.Fpais"/>
     <!--<mapping resource="entidades/hibernate.hbm.xml"/>-->

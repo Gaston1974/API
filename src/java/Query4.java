@@ -24,7 +24,7 @@ import org.hibernate.Session;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import varios.ImpresorHTML;
+import varios.ErrorHandlerEx;
 
 /**
  *
@@ -43,7 +43,7 @@ public class Query4 extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
  
         try 
@@ -56,7 +56,6 @@ public class Query4 extends HttpServlet {
         String body = "";
         String equipo = "";
         String apiId = "";
-        ImpresorHTML impresor = new ImpresorHTML();
       
               
         body = getBody(request);
@@ -67,10 +66,13 @@ public class Query4 extends HttpServlet {
                             JSONObject jo = (JSONObject) obj;
                             
                             equipo = (String) jo.get("equipo");
-                            apiId = (String) jo.get("sport");
+                            apiId = (String) jo.get("sport_id");
+                            
+                            ValidaData(out, equipo, apiId );
                                                                                                  
                             } catch (ParseException ex) {
                             Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, ex);
+                            throw new ErrorHandlerEx(out,"1");
                                                         }
       
           try {
@@ -80,7 +82,7 @@ public class Query4 extends HttpServlet {
                                                                                     
         session.beginTransaction();
            
-                System.out.println("Testing 1 - Send Http POST request");
+                System.out.println("Testing 1 - Send Http PUT request");
                    
                 aux =  (int) session.createQuery("SELECT equipoId FROM Fequipo t WHERE t.equipo = ?").setString(0, equipo).uniqueResult();
                 
@@ -92,18 +94,20 @@ public class Query4 extends HttpServlet {
                     session.flush(); 
                     
                                 }
-                else
-                   impresor.imprimir(out, "red", "No existe el equipo", "Eliminar");     
                     
         session.getTransaction().commit();  
         
                } catch (Exception ex) {
               Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, ex);
-              
+              throw new ErrorHandlerEx(out,"2");
                                                         }          
-        impresor.imprimir(out, "green", "El equipo fue actualizado", "API rest");
+          
+        out.println("El equipo fue actualizado");
 
-        }
+        } catch (ErrorHandlerEx e1) {
+          Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, e1);
+          System.out.println("Error:" + e1.getMsg());
+                                                        }
  
     }
         
@@ -142,5 +146,16 @@ public class Query4 extends HttpServlet {
     body = stringBuilder.toString();
     return body;
 }
+    
+                // Implementacion metodo validador de campos 
+    
+        public void ValidaData(PrintWriter salida, String equipo, String sport)
+            throws ErrorHandlerEx{
+        
+        if (  equipo.equals("") || sport.equals("") )
+        throw new ErrorHandlerEx(salida);
+        
+    }
+    
     
 }

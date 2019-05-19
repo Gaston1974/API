@@ -32,8 +32,14 @@ public class ErrorHandlerEx extends Exception {
     
     public ErrorHandlerEx(PrintWriter salida, String valor) {
         
+        if ( valor.equals("1")) {
         salida.println("falla al paresear el JSON, Revice la estructura");
         msg = "falla al paresear el JSON";
+                                }
+        else {
+        salida.println("No se encuentra el equipo en la base de datos");
+        msg = "query devuelve valor nulo";    
+        }
     } 
         
         

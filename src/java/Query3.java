@@ -23,7 +23,7 @@ import org.hibernate.Session;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import varios.ImpresorHTML;
+import varios.ErrorHandlerEx;
 
 /**
  *
@@ -53,7 +53,7 @@ public class Query3 extends HttpServlet {
         int aux = 0;
         String body = "";
         String equipo = "";
-        ImpresorHTML impresor = new ImpresorHTML();
+      
               
         body = getBody(request);
         
@@ -63,9 +63,12 @@ public class Query3 extends HttpServlet {
                             JSONObject jo = (JSONObject) obj;
                             
                             equipo = (String) jo.get("equipo");
-                                                                                                 
+                            
+                            ValidaData(out, equipo);
+                            
                             } catch (ParseException ex) {
                             Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, ex);
+                            throw new ErrorHandlerEx(out,"1");
                                                         }     
           try {
                                      
@@ -76,24 +79,26 @@ public class Query3 extends HttpServlet {
                 System.out.println("Testing 1 - Send Http DELETE request");
                    
                 aux =  (int) session.createQuery("SELECT equipoId FROM Fequipo t WHERE t.equipo = ?").setString(0, equipo).uniqueResult();
-                
+          
                 if ( aux != 0  )          {    
                     
                     Fequipo eq = (Fequipo) session.get(Fequipo.class, aux);
                     session.delete(eq);
                                           }
-                else
-                    impresor.imprimir(out, "red", "No existe el equipo", "Eliminar");     
-                   
+                    
         session.getTransaction().commit();  
         
                } catch (Exception ex) {
-              Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, ex);
-              
-                                                        }          
-        impresor.imprimir(out, "green", "El equipo fue eliminado", "API rest");
+              Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, ex);     
+              throw new ErrorHandlerEx(out,"2");
+                                      }          
+          
+       out.println("El equipo fue eliminado");
       
-        }
+        } catch (ErrorHandlerEx e1) {
+          Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, e1);
+          System.out.println("Error:" + e1.getMsg());
+                                                        }
  
     }
         
@@ -136,4 +141,13 @@ public class Query3 extends HttpServlet {
     return body;
 }
     
+            // Implementacion metodo validador de campos 
+    
+        public void ValidaData(PrintWriter salida, String equipo)
+            throws ErrorHandlerEx{
+        
+        if (  equipo.equals("") )
+        throw new ErrorHandlerEx(salida);
+        
+    }
 }

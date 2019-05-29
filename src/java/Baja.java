@@ -29,8 +29,8 @@ import varios.ErrorHandlerEx;
  *
  * @author gaston
  */
-@WebServlet(urlPatterns = {"/Query3"})
-public class Query3 extends HttpServlet {
+@WebServlet(urlPatterns = {"/Baja"})
+public class Baja extends HttpServlet {
 
      // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -67,7 +67,7 @@ public class Query3 extends HttpServlet {
                             ValidaData(out, equipo);
                             
                             } catch (ParseException ex) {
-                            Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(Alta.class.getName()).log(Level.SEVERE, null, ex);
                             throw new ErrorHandlerEx(out,"1");
                                                         }     
           try {
@@ -89,14 +89,14 @@ public class Query3 extends HttpServlet {
         session.getTransaction().commit();  
         
                } catch (Exception ex) {
-              Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, ex);     
+              Logger.getLogger(Alta.class.getName()).log(Level.SEVERE, null, ex);     
               throw new ErrorHandlerEx(out,"2");
                                       }          
           
        out.println("El equipo fue eliminado");
       
         } catch (ErrorHandlerEx e1) {
-          Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, e1);
+          Logger.getLogger(Alta.class.getName()).log(Level.SEVERE, null, e1);
           System.out.println("Error:" + e1.getMsg());
                                                         }
  

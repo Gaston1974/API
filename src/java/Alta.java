@@ -30,8 +30,8 @@ import varios.ErrorHandlerEx;
  *
  * @author gaston
  */
-@WebServlet(urlPatterns = {"/Query2"})
-public class Query2 extends HttpServlet {
+@WebServlet(urlPatterns = {"/Alta"})
+public class Alta extends HttpServlet {
 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -70,14 +70,18 @@ public class Query2 extends HttpServlet {
                             
                             paisId = (String) jo.get("pais");
                             equipo = (String) jo.get("equipo");
-                            equipoId = (String) jo.get("equipo_id");
+                            equipoId = (String) jo.get("IdProveedor");
                             
                             ValidaData(out, paisId, equipo, equipoId);
                             
                             } catch (ParseException ex) {
-                            Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(Alta.class.getName()).log(Level.SEVERE, null, ex);
                             throw new ErrorHandlerEx(out,"1");
                                                         }
+                             catch (Exception ex)       {
+                            Logger.getLogger(Alta.class.getName()).log(Level.SEVERE, null, ex);
+                            throw new ErrorHandlerEx(out,"1");    
+                                         }  
                              
         try {
       
@@ -96,13 +100,13 @@ public class Query2 extends HttpServlet {
         session.getTransaction().commit();  
         
             } catch (Exception ex)       {
-              Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, ex);
+              Logger.getLogger(Alta.class.getName()).log(Level.SEVERE, null, ex);
               
                                          }  
         out.println("El equipo fue dado de alta");
        
         } catch (ErrorHandlerEx e1) {
-          Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, e1);
+          Logger.getLogger(Alta.class.getName()).log(Level.SEVERE, null, e1);
           System.out.println("Error:" + e1.getMsg());
                                                         }
         
@@ -149,7 +153,7 @@ public class Query2 extends HttpServlet {
     public void ValidaData(PrintWriter salida, String pais, String equipo, String equipo_id)
             throws ErrorHandlerEx{
         
-        if ( pais.equals("") || equipo.equals("") || equipo_id.equals(""))
+        if ( pais.equals("") || equipo.equals("") || equipo_id.equals("")) 
         throw new ErrorHandlerEx(salida);
         
     }

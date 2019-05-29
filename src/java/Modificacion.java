@@ -30,8 +30,8 @@ import varios.ErrorHandlerEx;
  *
  * @author gaston
  */
-@WebServlet(urlPatterns = {"/Query4"})
-public class Query4 extends HttpServlet {
+@WebServlet(urlPatterns = {"/Modificacion"})
+public class Modificacion extends HttpServlet {
 
      // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -71,7 +71,7 @@ public class Query4 extends HttpServlet {
                             ValidaData(out, equipo, apiId );
                                                                                                  
                             } catch (ParseException ex) {
-                            Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(Alta.class.getName()).log(Level.SEVERE, null, ex);
                             throw new ErrorHandlerEx(out,"1");
                                                         }
       
@@ -98,14 +98,14 @@ public class Query4 extends HttpServlet {
         session.getTransaction().commit();  
         
                } catch (Exception ex) {
-              Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, ex);
+              Logger.getLogger(Alta.class.getName()).log(Level.SEVERE, null, ex);
               throw new ErrorHandlerEx(out,"2");
                                                         }          
           
         out.println("El equipo fue actualizado");
 
         } catch (ErrorHandlerEx e1) {
-          Logger.getLogger(Query2.class.getName()).log(Level.SEVERE, null, e1);
+          Logger.getLogger(Alta.class.getName()).log(Level.SEVERE, null, e1);
           System.out.println("Error:" + e1.getMsg());
                                                         }
  

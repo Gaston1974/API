@@ -53,8 +53,8 @@ import varios.ErrorHandlerEx;
  *
  * @author root
  */
-@WebServlet(urlPatterns = {"/Query"})
-public class Query extends HttpServlet {
+@WebServlet(urlPatterns = {"/Equipo"})
+public class Equipos extends HttpServlet {
     
     
         private final String USER_AGENT = "Mozilla/5.0";
@@ -111,7 +111,7 @@ public class Query extends HttpServlet {
                 statusCode = sendGet(param, key);
                 
                 } catch (Exception ex) {
-                Logger.getLogger(Query.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, ex);
                 throw new ErrorHandlerEx( out, 201 );
                                        }
                              
@@ -173,11 +173,11 @@ public class Query extends HttpServlet {
 		leedor.leer(out, "/home/gaston/javaAPI_REST/API_REST/web/WEB-INF/jugadores.json" );
             }  
         }   catch (ErrorHandlerEx e1) {
-                Logger.getLogger(Query.class.getName()).log(Level.SEVERE, null, e1);
+                Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, e1);
                 System.out.println("Excepcion:" + e1.getMsg());
             }
             catch (Exception ex) {
-                Logger.getLogger(Query.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, ex);
             }
                     
     }

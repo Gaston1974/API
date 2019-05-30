@@ -26,18 +26,18 @@ public class ErrorHandlerEx extends Exception {
     
     public ErrorHandlerEx(PrintWriter salida) {
         
-        salida.println("algunos de los campos requeridos no tiene valor");
+        salida.println("{\"codigo\":\"400\",\"respuesta\":\"algunos de los campos requeridos no tiene valor\"}");
         msg = "falla debido a campos con valor nulo";
     }   
     
     public ErrorHandlerEx(PrintWriter salida, String valor) {
         
         if ( valor.equals("1")) {
-        salida.println("falla al paresear el JSON, Revice la estructura");
+        salida.println("{\"codigo\":\"400\",\"respuesta\":\"falla al paresear el JSON, Revice la estructura\"}");
         msg = "falla al paresear el JSON";
                                 }
         else {
-        salida.println("No se encuentra el equipo en la base de datos");
+        salida.println("{\"codigo\":\"503\",\"respuesta\":\"servicio no disponible\"}");
         msg = "query devuelve valor nulo";    
         }
     } 
@@ -47,17 +47,14 @@ public class ErrorHandlerEx extends Exception {
       
         switch (codigo) {
             
-            case 201 :
-                    msg = "request OK, El equipo consultado no existe en la base de datos";
-                    break;
             case 204 :
-                    msg = "request OK, respuesta sin contenido";
+                    msg = "{\"codigo\":\"204\",\"respuesta\":\"sin contenido\"}";
                     break;
             case 503 :
-                    msg = "request OK, el servidor de APIsport no esta disponible";
+                    msg = "{\"codigo\":\"200\",\"respuesta\":\"el servidor de APIsport no esta disponible\"}";
                     break;
             default :        
-                    msg = "request OK, falla";
+                    msg = "{\"codigo\":\"503\",\"respuesta\":\"servicio no disponible\"}";
         }
         
         salida.println(getMsg());

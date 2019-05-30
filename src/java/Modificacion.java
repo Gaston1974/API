@@ -102,7 +102,7 @@ public class Modificacion extends HttpServlet {
               throw new ErrorHandlerEx(out,"2");
                                                         }          
           
-        out.println("El equipo fue actualizado");
+        out.println("{\"codigo\":\"204\",\"respuesta\":\"El equipo fue actualizado\"}");
 
         } catch (ErrorHandlerEx e1) {
           Logger.getLogger(Alta.class.getName()).log(Level.SEVERE, null, e1);

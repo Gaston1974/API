@@ -51,12 +51,13 @@ public class Baja extends HttpServlet {
             // declaracion de variables
             
         int aux = 0;
-        String body = "";
         String equipo = "";
-      
+        equipo = request.getParameter("equipo");
+        //String body = "";
+        ValidaData(out, equipo);     
               
-        body = getBody(request);
-        
+        //body = getBody(request);
+        /*
         Object obj; 
                         try {
                             obj = new JSONParser().parse(body);
@@ -69,7 +70,7 @@ public class Baja extends HttpServlet {
                             } catch (ParseException ex) {
                             Logger.getLogger(Alta.class.getName()).log(Level.SEVERE, null, ex);
                             throw new ErrorHandlerEx(out,"1");
-                                                        }     
+                                                        }     */
           try {
                                      
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();      
@@ -93,7 +94,7 @@ public class Baja extends HttpServlet {
               throw new ErrorHandlerEx(out,"2");
                                       }          
           
-       out.println("El equipo fue eliminado");
+       out.println("{\"codigo\":\"201\",\"respuesta\":\"El equipo fue eliminado\"}");
       
         } catch (ErrorHandlerEx e1) {
           Logger.getLogger(Alta.class.getName()).log(Level.SEVERE, null, e1);
@@ -105,7 +106,7 @@ public class Baja extends HttpServlet {
     
     
     
-        // Implementacion metodo para leer body del POST request
+        /* Implementacion metodo para leer body del POST request
     
     public static String getBody(HttpServletRequest request) throws IOException {
 
@@ -140,7 +141,7 @@ public class Baja extends HttpServlet {
     body = stringBuilder.toString();
     return body;
 }
-    
+    */
             // Implementacion metodo validador de campos 
     
         public void ValidaData(PrintWriter salida, String equipo)

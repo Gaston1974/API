@@ -103,7 +103,7 @@ public class Alta extends HttpServlet {
               Logger.getLogger(Alta.class.getName()).log(Level.SEVERE, null, ex);
               
                                          }  
-        out.println("El equipo fue dado de alta");
+        out.println("{\"codigo\":\"201\",\"respuesta\":\"El equipo fue dado de alta\"}");
        
         } catch (ErrorHandlerEx e1) {
           Logger.getLogger(Alta.class.getName()).log(Level.SEVERE, null, e1);

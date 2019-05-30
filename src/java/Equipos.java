@@ -53,7 +53,7 @@ import varios.ErrorHandlerEx;
  *
  * @author root
  */
-@WebServlet(urlPatterns = {"/Equipo"})
+@WebServlet(urlPatterns = {"/Equipos"})
 public class Equipos extends HttpServlet {
     
     
@@ -90,6 +90,9 @@ public class Equipos extends HttpServlet {
         String rutaArchivo = "/home/gaston/javaAPI_REST/API_REST/web/WEB-INF/jugadores.json" ;
         
         opcion = request.getParameter("teams");
+        String urlPattern = request.getServletPath();
+        System.out.println("Testing 1 - " + urlPattern );
+                   
         fwtr1 = new FileWriter(rutaArchivo);
               
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();      
@@ -112,7 +115,7 @@ public class Equipos extends HttpServlet {
                 
                 } catch (Exception ex) {
                 Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, ex);
-                throw new ErrorHandlerEx( out, 201 );
+                throw new ErrorHandlerEx( out, 204 );
                                        }
                              
                              
@@ -122,8 +125,8 @@ public class Equipos extends HttpServlet {
             String urlImagen = eq.getLogo_url();
             
             fwtr1.write("{\n" +
-                        "StatusCode:" + statusCode + ", \n" +
-                        "jugador:[ " ); 
+                        "\"StatusCode\":" + statusCode + ", \n" +
+                        "\"jugador\":[ " ); 
                                
 
                 // parseo JSON
@@ -140,7 +143,7 @@ public class Equipos extends HttpServlet {
                 Iterator itr2 = ja.iterator(); 
                 
                 if ( !itr2.hasNext() && statusCode == 200 ) 
-                    fwtr1.write("{\n no hay jugadores para el equipo elegido }" ); 
+                    fwtr1.write("{\n\"No hay jugadores para el equipo elegido\" }" ); 
                 else if ( statusCode != 200 )
                     throw new ErrorHandlerEx(out, statusCode);
                 else {

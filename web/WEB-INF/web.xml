@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <servlet>
-        <servlet-name>Query</servlet-name>
+        <servlet-name>Equipos</servlet-name>
         <servlet-class>Equipos</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Query2</servlet-name>
+        <servlet-name>Alta</servlet-name>
         <servlet-class>Alta</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Query3</servlet-name>
+        <servlet-name>Baja</servlet-name>
         <servlet-class>Baja</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Query4</servlet-name>
+        <servlet-name>Modificacion</servlet-name>
         <servlet-class>Modificacion</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>Query</servlet-name>
-        <url-pattern>/Query</url-pattern>
+        <servlet-name>Equipos</servlet-name>
+        <url-pattern>/Equipos</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Query2</servlet-name>
-        <url-pattern>/Query2</url-pattern>
+        <servlet-name>Alta</servlet-name>
+        <url-pattern>/Alta</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Query3</servlet-name>
-        <url-pattern>/Query3</url-pattern>
+        <servlet-name>Baja</servlet-name>
+        <url-pattern>/Baja</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Query4</servlet-name>
-        <url-pattern>/Query4</url-pattern>
+        <servlet-name>Modificacion</servlet-name>
+        <url-pattern>/Modificacion</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>15</session-timeout>

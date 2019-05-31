@@ -3,13 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-/*
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.ObjectMapper;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-*/
+
+
 import hibernate.HibernateUtil;
 import entidades.Fequipo;
 import java.io.BufferedReader;
@@ -19,12 +14,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import varios.Leedor;
-import varios.ImpresorHTML;
-//import java.sql.Timestamp; 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,16 +34,16 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.simple.JSONObject;
 import entidades.Jugador;
+import java.io.InputStream;
 import org.json.simple.JSONArray;
 import varios.ErrorHandlerEx;
-
-//import javax.servlet.*;
 
 
 /**
  *
  * @author root
  */
+
 @WebServlet(urlPatterns = {"/Equipos"})
 public class Equipos extends HttpServlet {
     
@@ -60,15 +51,6 @@ public class Equipos extends HttpServlet {
         private final String USER_AGENT = "Mozilla/5.0";
 
     
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -185,8 +167,212 @@ public class Equipos extends HttpServlet {
                     
     }
     
-    	// HTTP GET request
-	public int sendGet(String p, String k) throws Exception {
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+      
+        
+                    try 
+            (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            // declaracion de variables
+        System.out.println("Send Http POST request");   
+            // declaracion de variables
+        int max = 0;   
+        String body = "";
+        String paisId = "" ;
+        String equipo = "";
+        String equipoId = "";
+        
+    
+        body = getBody(request);
+        System.out.println("body:" + body);
+        Object obj; 
+                        try {
+                            obj = new JSONParser().parse(body);
+                            JSONObject jo = (JSONObject) obj;
+                            
+                            paisId = (String) jo.get("pais");
+                            equipo = (String) jo.get("equipo");
+                            equipoId = (String) jo.get("IdProveedor");
+                            
+                            ValidaData(out, paisId, equipo, equipoId);
+                            
+                            } catch (org.json.simple.parser.ParseException ex) {
+                            Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, ex);
+                            throw new ErrorHandlerEx(out,"1");
+                                                        }
+                             catch (Exception ex)       {
+                            Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, ex);
+                            throw new ErrorHandlerEx(out,"1");    
+                                         }  
+                             
+        try {
+      
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();      
+                                                                                    
+        session.beginTransaction();                     
+                               
+                max =  (int) session.createQuery("SELECT MAX(equipoId) FROM Fequipo").uniqueResult();
+                max++;
+                
+                Fequipo eq = new Fequipo(Integer.parseInt(paisId), max, equipo, equipoId);          
+                             
+                session.save(eq);
+                  
+        
+        session.getTransaction().commit();  
+        
+            } catch (Exception ex)       {
+              Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, ex);
+              
+                                         }  
+        out.println("{\"codigo\":\"201\",\"respuesta\":\"El equipo fue dado de alta\"}");
+       
+        } catch (ErrorHandlerEx e1) {
+          Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, e1);
+          System.out.println("Error:" + e1.getMsg());
+                                                        }
+        
+    }
+    
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+ 
+        try 
+            (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            // declaracion de variables
+            
+        int aux = 0;
+        String equipo = "";
+        equipo = request.getParameter("equipo");
+        //String body = "";
+        ValidaData(out, equipo);     
+              
+        //body = getBody(request);
+        /*
+        Object obj; 
+                        try {
+                            obj = new JSONParser().parse(body);
+                            JSONObject jo = (JSONObject) obj;
+                            
+                            equipo = (String) jo.get("equipo");
+                            
+                            ValidaData(out, equipo);
+                            
+                            } catch (ParseException ex) {
+                            Logger.getLogger(Alta.class.getName()).log(Level.SEVERE, null, ex);
+                            throw new ErrorHandlerEx(out,"1");
+                                                        }     */
+          try {
+                                     
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();      
+                                                                                    
+        session.beginTransaction();
+           
+                System.out.println("Testing 1 - Send Http DELETE request");
+                   
+                aux =  (int) session.createQuery("SELECT equipoId FROM Fequipo t WHERE t.equipo = ?").setString(0, equipo).uniqueResult();
+          
+                if ( aux != 0  )          {    
+                    
+                    Fequipo eq = (Fequipo) session.get(Fequipo.class, aux);
+                    session.delete(eq);
+                                          }
+                    
+        session.getTransaction().commit();  
+        
+               } catch (Exception ex) {
+              Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, ex);     
+              throw new ErrorHandlerEx(out,"2");
+                                      }          
+          
+       out.println("{\"codigo\":\"201\",\"respuesta\":\"El equipo fue eliminado\"}");
+      
+        } catch (ErrorHandlerEx e1) {
+          Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, e1);
+          System.out.println("Error:" + e1.getMsg());
+                                                        }
+ 
+    }
+   
+    
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+ 
+        try 
+          //   (OutputStream output = response.getOutputStream()) {
+            (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            // declaracion de variables
+            
+        int aux = 0;
+        String body = "";
+        String equipo = "";
+        String apiId = "";
+      
+              
+        body = getBody(request);
+        
+        Object obj; 
+                        try {
+                            obj = new JSONParser().parse(body);
+                            JSONObject jo = (JSONObject) obj;
+                            
+                            equipo = (String) jo.get("equipo");
+                            apiId = (String) jo.get("IdProveedor");
+                            
+                            ValidaData(out, equipo, apiId );
+                                                                                                 
+                            } catch (org.json.simple.parser.ParseException ex) {
+                            Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, ex);
+                            throw new ErrorHandlerEx(out,"1");
+                                                        }
+      
+          try {
+              
+                         
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();      
+                                                                                    
+        session.beginTransaction();
+           
+                System.out.println("Testing 1 - Send Http PUT request");
+                   
+                aux =  (int) session.createQuery("SELECT equipoId FROM Fequipo t WHERE t.equipo = ?").setString(0, equipo).uniqueResult();
+                
+                
+                if ( aux != 0 ) {
+                    
+                    Fequipo eq = (Fequipo) session.get(Fequipo.class, aux);
+                    eq.setApi_id(apiId);
+                    session.flush(); 
+                    
+                                }
+                    
+        session.getTransaction().commit();  
+        
+               } catch (Exception ex) {
+              Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, ex);
+              throw new ErrorHandlerEx(out,"2");
+                                                        }          
+          
+        out.println("{\"codigo\":\"204\",\"respuesta\":\"El equipo fue actualizado\"}");
+
+        } catch (ErrorHandlerEx e1) {
+          Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, e1);
+          System.out.println("Error:" + e1.getMsg());
+                                                        }
+ 
+    }    
+        
+    
+     	// HTTP GET request
+        public int sendGet(String p, String k) throws Exception {
 
 		int status;
                 String url = "https://allsportsapi.com/api/football/?&met=Teams&teamId=";
@@ -225,4 +411,65 @@ public class Equipos extends HttpServlet {
                 fwtr2.close();
                 return status;
 	}
+    
+        // Implementacion metodo para leer body del POST request
+        public static String getBody(HttpServletRequest request) throws IOException {
+
+    String body = null;
+    StringBuilder stringBuilder = new StringBuilder();
+    BufferedReader bufferedReader = null;
+
+    try {
+        InputStream inputStream = request.getInputStream();
+        if (inputStream != null) {
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            char[] charBuffer = new char[128];
+            int bytesRead = -1;
+            while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
+                stringBuilder.append(charBuffer, 0, bytesRead);
+            }
+        } else {
+            stringBuilder.append("");
+        }
+    } catch (IOException ex) {
+        throw ex;
+    } finally {
+        if (bufferedReader != null) {
+            try {
+                bufferedReader.close();
+            } catch (IOException ex) {
+                throw ex;
+            }
+        }
+    }
+
+    body = stringBuilder.toString();
+    return body;
+}
+    
+        // Implementacion validacion parametros URL
+    
+        public void ValidaData(PrintWriter salida, String pais, String equipo, String equipo_id)
+            throws ErrorHandlerEx{
+        
+        if ( pais.equals("") || equipo.equals("") || equipo_id.equals("")) 
+        throw new ErrorHandlerEx(salida);
+        
+    }
+        
+        public void ValidaData(PrintWriter salida, String equipo)
+            throws ErrorHandlerEx{
+        
+        if (  equipo.equals("") )
+        throw new ErrorHandlerEx(salida);
+        
+    }
+                          
+        public void ValidaData(PrintWriter salida, String equipo, String sport)
+            throws ErrorHandlerEx{
+        
+        if (  equipo.equals("") || sport.equals("") )
+        throw new ErrorHandlerEx(salida);
+        
+    }
 }

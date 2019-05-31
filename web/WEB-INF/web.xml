@@ -1,36 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <servlet>
-        <servlet-name>Equipos</servlet-name>
-        <servlet-class>Equipos</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>Alta</servlet-name>
-        <servlet-class>Alta</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>Baja</servlet-name>
-        <servlet-class>Baja</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>Modificacion</servlet-name>
-        <servlet-class>Modificacion</servlet-class>
+        <servlet-name>Futbol</servlet-name>
+        <servlet-class>Futbol</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>Equipos</servlet-name>
-        <url-pattern>/Equipos</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Alta</servlet-name>
-        <url-pattern>/Alta</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Baja</servlet-name>
-        <url-pattern>/Baja</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Modificacion</servlet-name>
-        <url-pattern>/Modificacion</url-pattern>
+        <servlet-name>Futbol</servlet-name>
+        <url-pattern>/Futbol</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>15</session-timeout>

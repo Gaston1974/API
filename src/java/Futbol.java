@@ -44,8 +44,8 @@ import varios.ErrorHandlerEx;
  * @author root
  */
 
-@WebServlet(urlPatterns = {"/Equipos"})
-public class Equipos extends HttpServlet {
+@WebServlet(urlPatterns = {"/Futbol"})
+public class Futbol extends HttpServlet {
     
     
         private final String USER_AGENT = "Mozilla/5.0";
@@ -61,7 +61,7 @@ public class Equipos extends HttpServlet {
             /* TODO output your page here. You may use following sample code. */
             // declaracion de variables
             
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-M-dd hh:mm:ss");
+       
         String opcion = "0";
         Fequipo eq = new Fequipo();
         Leedor leedor = new Leedor();
@@ -71,10 +71,9 @@ public class Equipos extends HttpServlet {
         FileWriter fwtr1 = null;
         String rutaArchivo = "/home/gaston/javaAPI_REST/API_REST/web/WEB-INF/jugadores.json" ;
         
-        opcion = request.getParameter("teams");
-        String urlPattern = request.getServletPath();
-        System.out.println("Testing 1 - " + urlPattern );
-                   
+        opcion = request.getParameter("equipo");
+        //String urlPattern = request.getServletPath();
+    
         fwtr1 = new FileWriter(rutaArchivo);
               
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();      
@@ -96,7 +95,7 @@ public class Equipos extends HttpServlet {
                 statusCode = sendGet(param, key);
                 
                 } catch (Exception ex) {
-                Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
                 throw new ErrorHandlerEx( out, 204 );
                                        }
                              
@@ -158,11 +157,11 @@ public class Equipos extends HttpServlet {
 		leedor.leer(out, "/home/gaston/javaAPI_REST/API_REST/web/WEB-INF/jugadores.json" );
             }  
         }   catch (ErrorHandlerEx e1) {
-                Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, e1);
+                Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, e1);
                 System.out.println("Excepcion:" + e1.getMsg());
             }
             catch (Exception ex) {
-                Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
             }
                     
     }
@@ -200,11 +199,11 @@ public class Equipos extends HttpServlet {
                             ValidaData(out, paisId, equipo, equipoId);
                             
                             } catch (org.json.simple.parser.ParseException ex) {
-                            Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
                             throw new ErrorHandlerEx(out,"1");
                                                         }
                              catch (Exception ex)       {
-                            Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
                             throw new ErrorHandlerEx(out,"1");    
                                          }  
                              
@@ -225,13 +224,13 @@ public class Equipos extends HttpServlet {
         session.getTransaction().commit();  
         
             } catch (Exception ex)       {
-              Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, ex);
+              Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
               
                                          }  
         out.println("{\"codigo\":\"201\",\"respuesta\":\"El equipo fue dado de alta\"}");
        
         } catch (ErrorHandlerEx e1) {
-          Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, e1);
+          Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, e1);
           System.out.println("Error:" + e1.getMsg());
                                                         }
         
@@ -287,14 +286,14 @@ public class Equipos extends HttpServlet {
         session.getTransaction().commit();  
         
                } catch (Exception ex) {
-              Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, ex);     
+              Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);     
               throw new ErrorHandlerEx(out,"2");
                                       }          
           
        out.println("{\"codigo\":\"201\",\"respuesta\":\"El equipo fue eliminado\"}");
       
         } catch (ErrorHandlerEx e1) {
-          Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, e1);
+          Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, e1);
           System.out.println("Error:" + e1.getMsg());
                                                         }
  
@@ -330,7 +329,7 @@ public class Equipos extends HttpServlet {
                             ValidaData(out, equipo, apiId );
                                                                                                  
                             } catch (org.json.simple.parser.ParseException ex) {
-                            Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
                             throw new ErrorHandlerEx(out,"1");
                                                         }
       
@@ -357,14 +356,14 @@ public class Equipos extends HttpServlet {
         session.getTransaction().commit();  
         
                } catch (Exception ex) {
-              Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, ex);
+              Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
               throw new ErrorHandlerEx(out,"2");
                                                         }          
           
         out.println("{\"codigo\":\"204\",\"respuesta\":\"El equipo fue actualizado\"}");
 
         } catch (ErrorHandlerEx e1) {
-          Logger.getLogger(Equipos.class.getName()).log(Level.SEVERE, null, e1);
+          Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, e1);
           System.out.println("Error:" + e1.getMsg());
                                                         }
  

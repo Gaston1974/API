@@ -69,7 +69,7 @@ public class Futbol extends HttpServlet {
         int i = 0;
         int statusCode = 0;
         FileWriter fwtr1 = null;
-        String rutaArchivo = "/home/gaston/javaAPI_REST/API_REST/web/WEB-INF/jugadores.json" ;
+        String rutaArchivo = "/home/gaston/API/API/API_REST/web/WEB-INF/jugadores.json" ;
         
         opcion = request.getParameter("equipo");
         //String urlPattern = request.getServletPath();
@@ -91,7 +91,8 @@ public class Futbol extends HttpServlet {
                 eq = (Fequipo) session.getNamedQuery("Select_equipoId").setInteger(0, opc).uniqueResult();
                 String param = eq.getApi_id(); 
                 String key = "&APIkey=3181aba25e0ededb5fa60883bd351da54315e3395abfbee8ab8cf6f768c63751";
-                                
+                
+                // Invoco API REST de Cristian                
                 statusCode = sendGet(param, key);
                 
                 } catch (Exception ex) {

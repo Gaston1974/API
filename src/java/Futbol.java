@@ -41,6 +41,7 @@ import varios.ErrorHandlerEx;
 
 
 
+
 /**
  *
  * @author root
@@ -51,7 +52,7 @@ public class Futbol extends HttpServlet {
     
     
         private final String USER_AGENT = "Mozilla/5.0";
-
+        String home = System.getenv("HOME");
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -71,8 +72,7 @@ public class Futbol extends HttpServlet {
         int i = 0;
         int statusCode = 0;
         FileWriter fwtr1 = null;
-        String rutaArchivo = "/home/gaston/javaAPI_REST/API_REST/web/WEB-INF/jugadores.json" ;
-        
+        String rutaArchivo = home + "/API/web/WEB-INF/jugadores.json" ;
        
         String urlPattern = request.getPathInfo(); 
         String regex = ".*/jugadores.*";
@@ -118,13 +118,13 @@ public class Futbol extends HttpServlet {
             // urlImagen = busco id ( API FUTBOL ) del equipo en la base         
             String urlImagen = eq.getLogo_url();
             
-            fwtr1.write("{\n[ "); 
+            fwtr1.write("[ "); 
                                      
 
                 // parseo JSON
                 
                 Object obj; 
-                obj = new JSONParser().parse(new FileReader("/home/gaston/javaAPI_REST/API_REST/web/WEB-INF/file.json"));
+                obj = new JSONParser().parse(new FileReader(home + "/API/web/WEB-INF/file.json"));
                 JSONObject jo = (JSONObject) obj;
                 
                 Iterator<Map.Entry> itr1 ;
@@ -163,9 +163,9 @@ public class Futbol extends HttpServlet {
                                                                  }
                                               } 
                                          } 
-                fwtr1.write("\n]\n}");
+                fwtr1.write("\n]");
                 fwtr1.close();    
-		leedor.leer(out, "/home/gaston/javaAPI_REST/API_REST/web/WEB-INF/jugadores.json" );
+		leedor.leer(out, home + "/API/web/WEB-INF/jugadores.json" );
             }  
         }   catch (ErrorHandlerEx e1) {
                 Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, e1);
@@ -386,7 +386,7 @@ public class Futbol extends HttpServlet {
 
 		int status;
                 String url = "https://allsportsapi.com/api/football/?&met=Teams&teamId=";
-                FileWriter fwtr2 = new FileWriter("/home/gaston/javaAPI_REST/API_REST/web/WEB-INF/file.json");
+                FileWriter fwtr2 = new FileWriter(home + "/API/web/WEB-INF/file.json");
                             
              
                 String urlParam = url + p ;

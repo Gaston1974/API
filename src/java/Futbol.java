@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import varios.Leedor;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -63,7 +62,7 @@ public class Futbol extends HttpServlet {
             (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             // declaracion de variables
-            
+           
        
         String opcion = "0";
         Fequipo eq = new Fequipo();
@@ -100,28 +99,29 @@ public class Futbol extends HttpServlet {
                 String param = eq.getApi_id(); 
                 String key = "&APIkey=3181aba25e0ededb5fa60883bd351da54315e3395abfbee8ab8cf6f768c63751";
                 
-                // Invoco API REST de Cristian                
+                // Invoco API REST de Cristian. Me devuelve codigo proveedor "param"           
                 statusCode = sendGet(param, key);
                 
                 } catch (NumberFormatException e ) {
                 Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, e);
-                throw new ErrorHandlerEx( out, 400 );
+                throw new ErrorHandlerEx( response, out, 400 );
                                        }
                 catch (Exception ex) {
                 Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
-                throw new ErrorHandlerEx( out, 204 );
+                response.setStatus(204);
+                throw new ErrorHandlerEx( response, out, 204 );
                                        }
                              
                              
         session.getTransaction().commit();    
         
             // urlImagen = busco id ( API FUTBOL ) del equipo en la base         
-            String urlImagen = eq.getLogo_url();
+            // String urlImagen = eq.getLogo_url();
             
             fwtr1.write("[ "); 
                                      
 
-                // parseo JSON
+                // parseo JSON devuelto por SPORT API
                 
                 Object obj; 
                 obj = new JSONParser().parse(new FileReader(home + "/API/web/WEB-INF/file.json"));
@@ -137,7 +137,7 @@ public class Futbol extends HttpServlet {
                 if ( !itr2.hasNext() && statusCode == 200 ) 
                     fwtr1.write("{\n\"No hay jugadores para el equipo elegido\" }" ); 
                 else if ( statusCode != 200 )
-                    throw new ErrorHandlerEx(out, statusCode);
+                    throw new ErrorHandlerEx(response, out, statusCode);
                 else {
                 
                 while (itr2.hasNext())  { 
@@ -207,15 +207,15 @@ public class Futbol extends HttpServlet {
                             equipo = (String) jo.get("equipo");
                             equipoId = (String) jo.get("IdProveedor");
                             
-                            ValidaData(out, paisId, equipo, equipoId);
+                            ValidaData(response, out, paisId, equipo, equipoId);
                             
                             } catch (org.json.simple.parser.ParseException ex) {
                             Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
-                            throw new ErrorHandlerEx(out,"1");
+                            throw new ErrorHandlerEx(response, out,"1");
                                                         }
                              catch (Exception ex)       {
                             Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
-                            throw new ErrorHandlerEx(out,"1");    
+                            throw new ErrorHandlerEx(response, out,"1");    
                                          }  
                              
         try {
@@ -236,9 +236,10 @@ public class Futbol extends HttpServlet {
         
             } catch (Exception ex)       {
               Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
-              
+              throw new ErrorHandlerEx( response, out, 200 );
                                          }  
-        out.println("{\"codigo\":\"201\",\"respuesta\":\"El equipo fue dado de alta\"}");
+        response.setStatus(201);
+        out.println("{\"respuesta\":\"El equipo fue dado de alta\"}");
        
         } catch (ErrorHandlerEx e1) {
           Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, e1);
@@ -260,33 +261,21 @@ public class Futbol extends HttpServlet {
         int aux = 0;
         String equipo = "";
         equipo = request.getParameter("equipo");
-        //String body = "";
-        ValidaData(out, equipo);     
+   
+        ValidaData(response, out, equipo);     
               
-        //body = getBody(request);
-        /*
-        Object obj; 
-                        try {
-                            obj = new JSONParser().parse(body);
-                            JSONObject jo = (JSONObject) obj;
-                            
-                            equipo = (String) jo.get("equipo");
-                            
-                            ValidaData(out, equipo);
-                            
-                            } catch (ParseException ex) {
-                            Logger.getLogger(Alta.class.getName()).log(Level.SEVERE, null, ex);
-                            throw new ErrorHandlerEx(out,"1");
-                                                        }     */
+
           try {
-                                     
+        
+        int equ = Integer.parseInt(equipo);
+              
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();      
                                                                                     
         session.beginTransaction();
            
                 System.out.println("Testing 1 - Send Http DELETE request");
                    
-                aux =  (int) session.createQuery("SELECT equipoId FROM Fequipo t WHERE t.equipo = ?").setString(0, equipo).uniqueResult();
+                aux =  (int) session.createQuery("SELECT equipoId FROM Fequipo t WHERE t.equipoId = ?").setInteger(0, equ).uniqueResult();
         
                 if ( aux != 0  )          {    
                     
@@ -296,12 +285,17 @@ public class Futbol extends HttpServlet {
                     
         session.getTransaction().commit();  
         
-               } catch (Exception ex) {
-              Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);     
-              throw new ErrorHandlerEx(out,"2");
-                                      }          
+               } catch (NumberFormatException e ) {
+                Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, e);
+                throw new ErrorHandlerEx( response, out, 400 );
+                                       } 
+                 catch (Exception ex) {
+                 Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);     
+                 throw new ErrorHandlerEx(response, out, 204);
+                                      }    
           
-       out.println("{\"codigo\":\"201\",\"respuesta\":\"El equipo fue eliminado\"}");
+       response.setStatus(201);   
+       out.println("{\"respuesta\":\"El equipo fue eliminado\"}");
       
         } catch (ErrorHandlerEx e1) {
           Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, e1);
@@ -337,11 +331,11 @@ public class Futbol extends HttpServlet {
                             equipo = (String) jo.get("equipo");
                             apiId = (String) jo.get("IdProveedor");
                             
-                            ValidaData(out, equipo, apiId );
+                            ValidaData(response, out, equipo, apiId );
                                                                                                  
                             } catch (org.json.simple.parser.ParseException ex) {
                             Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
-                            throw new ErrorHandlerEx(out,"1");
+                            throw new ErrorHandlerEx(response, out,"1");
                                                         }
       
           try {
@@ -368,10 +362,10 @@ public class Futbol extends HttpServlet {
         
                } catch (Exception ex) {
               Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
-              throw new ErrorHandlerEx(out,"2");
+              throw new ErrorHandlerEx(response, out,"2");
                                                         }          
-          
-        out.println("{\"codigo\":\"204\",\"respuesta\":\"El equipo fue actualizado\"}");
+        response.setStatus(201);  
+        out.println("{\"respuesta\":\"El equipo fue actualizado\"}");
 
         } catch (ErrorHandlerEx e1) {
           Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, e1);
@@ -459,27 +453,27 @@ public class Futbol extends HttpServlet {
     
         // Implementacion validacion parametros URL
     
-        public void ValidaData(PrintWriter salida, String pais, String equipo, String equipo_id)
+        public void ValidaData(HttpServletResponse res, PrintWriter salida, String pais, String equipo, String equipo_id)
             throws ErrorHandlerEx{
         
         if ( pais.equals("") || equipo.equals("") || equipo_id.equals("")) 
-        throw new ErrorHandlerEx(salida);
+        throw new ErrorHandlerEx(res, salida);
         
     }
         
-        public void ValidaData(PrintWriter salida, String equipo)
+        public void ValidaData(HttpServletResponse res, PrintWriter salida, String equipo)
             throws ErrorHandlerEx{
         
         if (  equipo.equals("") )
-        throw new ErrorHandlerEx(salida);
+        throw new ErrorHandlerEx(res, salida);
         
     }
                           
-        public void ValidaData(PrintWriter salida, String equipo, String sport)
+        public void ValidaData(HttpServletResponse res, PrintWriter salida, String equipo, String sport)
             throws ErrorHandlerEx{
         
         if (  equipo.equals("") || sport.equals("") )
-        throw new ErrorHandlerEx(salida);
+        throw new ErrorHandlerEx(res, salida);
         
     }
 }

@@ -6,6 +6,7 @@
 package varios;
 
 import java.io.PrintWriter;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -17,47 +18,58 @@ public class ErrorHandlerEx extends Exception {
     private String msg = "";
     
     
-    public ErrorHandlerEx(PrintWriter salida, int codigo) {
+    public ErrorHandlerEx(HttpServletResponse res, PrintWriter salida, int codigo) {
         
         this.codigo = codigo;
-        EnviarMsg(salida);
+        EnviarMsg(res, salida);
     }   
     
     
-    public ErrorHandlerEx(PrintWriter salida) {
+    public ErrorHandlerEx(HttpServletResponse res, PrintWriter salida) {
         
         salida.println("{\"codigo\":\"400\",\"respuesta\":\"algunos de los campos requeridos no tiene valor\"}");
+        res.setStatus(400);
         msg = "falla debido a campos con valor nulo";
     }   
     
-    public ErrorHandlerEx(PrintWriter salida, String valor) {
+    public ErrorHandlerEx(HttpServletResponse res, PrintWriter salida, String valor) {
         
         if ( valor.equals("1")) {
         salida.println("{\"codigo\":\"400\",\"respuesta\":\"falla al paresear el JSON, Revice la estructura\"}");
+        res.setStatus(400);
         msg = "falla al paresear el JSON";
                                 }
         else {
         salida.println("{\"codigo\":\"503\",\"respuesta\":\"servicio no disponible\"}");
+        res.setStatus(503);
         msg = "query devuelve valor nulo";    
         }
     } 
         
         
-    public void EnviarMsg(PrintWriter salida) {
+    public void EnviarMsg(HttpServletResponse resCode, PrintWriter salida) {
       
         switch (codigo) {
             
+            case 200 :
+                    msg = "{\"respuesta\":\"No se pudo crear el recurso, intente nuevamente mas tarde\"}";  
+                    resCode.setStatus(200);
+                    break;
             case 204 :
-                    msg = "{\"codigo\":\"204\",\"respuesta\":\"\"}";  // sin contenido
+                    msg = "{\"respuesta\":\"\"}";  // sin contenido
+                    resCode.setStatus(204);
                     break;
             case 400 :
-                    msg = "{\"codigo\":\"400\",\"respuesta\":\"revice la sintaxis en la url\"}";
+                    msg = "{\"respuesta\":\"revice la sintaxis en la url\"}";
+                    resCode.setStatus(400);
                     break;        
             case 503 :
-                    msg = "{\"codigo\":\"200\",\"respuesta\":\"el servidor de APIsport no esta disponible\"}";
+                    msg = "{\"respuesta\":\"el servidor de APIsport no esta disponible\"}";
+                    resCode.setStatus(503);
                     break;
-            default :        
-                    msg = "{\"codigo\":\"503\",\"respuesta\":\"servicio no disponible\"}";
+            default :  
+                    msg = "{\"respuesta\":\"servicio no disponible\"}";
+                    resCode.setStatus(codigo);
         }
         
         salida.println(getMsg());

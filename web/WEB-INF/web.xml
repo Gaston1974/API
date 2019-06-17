@@ -6,7 +6,11 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>Futbol</servlet-name>
-        <url-pattern>/Futbol</url-pattern>
+        <url-pattern>/Futbol/equipo</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Futbol</servlet-name>
+        <url-pattern>/Futbol/equipo/*</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>15</session-timeout>

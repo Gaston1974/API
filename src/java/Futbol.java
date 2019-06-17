@@ -35,8 +35,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.simple.JSONObject;
 import entidades.Jugador;
 import java.io.InputStream;
+import java.util.regex.Pattern;
 import org.json.simple.JSONArray;
 import varios.ErrorHandlerEx;
+
 
 
 /**
@@ -44,7 +46,7 @@ import varios.ErrorHandlerEx;
  * @author root
  */
 
-@WebServlet(urlPatterns = {"/Futbol"})
+@WebServlet(urlPatterns = {"/Futbol/equipo", "Futbol/equipo/*"})
 public class Futbol extends HttpServlet {
     
     
@@ -69,11 +71,17 @@ public class Futbol extends HttpServlet {
         int i = 0;
         int statusCode = 0;
         FileWriter fwtr1 = null;
-        String rutaArchivo = "/home/gaston/API/API/API_REST/web/WEB-INF/jugadores.json" ;
+        String rutaArchivo = "/home/gaston/javaAPI_REST/API_REST/web/WEB-INF/jugadores.json" ;
         
-        opcion = request.getParameter("equipo");
-        //String urlPattern = request.getServletPath();
+       
+        String urlPattern = request.getPathInfo(); 
+        String regex = ".*/jugadores.*";
+
+        boolean matches = Pattern.matches(regex, urlPattern);
     
+        String [] equipo = urlPattern.split("/");
+        opcion = equipo [1]; 
+        
         fwtr1 = new FileWriter(rutaArchivo);
               
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();      
@@ -84,10 +92,10 @@ public class Futbol extends HttpServlet {
                 System.out.println("Testing 1 - Send Http GET request");
                    
                 // param = busco id ( API FUTBOL ) del equipo en la base
+                try {    
                 int opc = Integer.parseInt(opcion);
-                
-                try {
                     
+                                    
                 eq = (Fequipo) session.getNamedQuery("Select_equipoId").setInteger(0, opc).uniqueResult();
                 String param = eq.getApi_id(); 
                 String key = "&APIkey=3181aba25e0ededb5fa60883bd351da54315e3395abfbee8ab8cf6f768c63751";
@@ -95,7 +103,11 @@ public class Futbol extends HttpServlet {
                 // Invoco API REST de Cristian                
                 statusCode = sendGet(param, key);
                 
-                } catch (Exception ex) {
+                } catch (NumberFormatException e ) {
+                Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, e);
+                throw new ErrorHandlerEx( out, 400 );
+                                       }
+                catch (Exception ex) {
                 Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
                 throw new ErrorHandlerEx( out, 204 );
                                        }
@@ -106,10 +118,8 @@ public class Futbol extends HttpServlet {
             // urlImagen = busco id ( API FUTBOL ) del equipo en la base         
             String urlImagen = eq.getLogo_url();
             
-            fwtr1.write("{\n" +
-                        "\"StatusCode\":" + statusCode + ", \n" +
-                        "\"jugador\":[ " ); 
-                               
+            fwtr1.write("{\n[ "); 
+                                     
 
                 // parseo JSON
                 
@@ -277,7 +287,7 @@ public class Futbol extends HttpServlet {
                 System.out.println("Testing 1 - Send Http DELETE request");
                    
                 aux =  (int) session.createQuery("SELECT equipoId FROM Fequipo t WHERE t.equipo = ?").setString(0, equipo).uniqueResult();
-          
+        
                 if ( aux != 0  )          {    
                     
                     Fequipo eq = (Fequipo) session.get(Fequipo.class, aux);

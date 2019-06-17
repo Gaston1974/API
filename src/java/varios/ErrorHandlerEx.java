@@ -48,8 +48,11 @@ public class ErrorHandlerEx extends Exception {
         switch (codigo) {
             
             case 204 :
-                    msg = "{\"codigo\":\"204\",\"respuesta\":\"sin contenido\"}";
+                    msg = "{\"codigo\":\"204\",\"respuesta\":\"\"}";  // sin contenido
                     break;
+            case 400 :
+                    msg = "{\"codigo\":\"400\",\"respuesta\":\"revice la sintaxis en la url\"}";
+                    break;        
             case 503 :
                     msg = "{\"codigo\":\"200\",\"respuesta\":\"el servidor de APIsport no esta disponible\"}";
                     break;

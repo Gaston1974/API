@@ -71,8 +71,11 @@ public class Futbol extends HttpServlet {
         int i = 0;
         int statusCode = 0;
         FileWriter fwtr1 = null;
+        String key = "&APIkey=3181aba25e0ededb5fa60883bd351da54315e3395abfbee8ab8cf6f768c63751"; 
         String rutaArchivo = home + "/API/web/WEB-INF/jugadores.json" ;
-       
+        String url1 = "https://allsportsapi.com/api/football/?&met=Teams&teamId=";
+        String url2 = "http:/ip:3000/api/equipo/:id_equipo?id_equipo=";
+        Object obj,obj2;         
         String urlPattern = request.getPathInfo(); 
         String regex = ".*/jugadores.*";
 
@@ -83,37 +86,61 @@ public class Futbol extends HttpServlet {
         
         fwtr1 = new FileWriter(rutaArchivo);
               
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();      
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();                             //base de datos
                                                                                     
-        session.beginTransaction();
+        session.beginTransaction();                                                                          //base de datos
         
 
                 System.out.println("Testing 1 - Send Http GET request");
                    
-                // param = busco id ( API FUTBOL ) del equipo en la base
-                try {    
-                int opc = Integer.parseInt(opcion);
+                // param = busco id ( proveedor ) del equipo en la base de datos propia o en la API de Cristian
+                
+                try {                                                                                        //base de datos
+                int opc = Integer.parseInt(opcion);                                                          //base de datos
                     
                                     
-                eq = (Fequipo) session.getNamedQuery("Select_equipoId").setInteger(0, opc).uniqueResult();
-                String param = eq.getApi_id(); 
-                String key = "&APIkey=3181aba25e0ededb5fa60883bd351da54315e3395abfbee8ab8cf6f768c63751";
+                eq = (Fequipo) session.getNamedQuery("Select_equipoId").setInteger(0, opc).uniqueResult();   //base de datos
+                String param = eq.getApi_id();                                                               //base de datos
+                               
+         
+                /*
+                            statusCode = sendGet(opcion, key, url2, "2" );
+                            FileReader fr = new FileReader (home + "/API/web/WEB-INF/file2.json");
                 
-                // Invoco API REST de Cristian. Me devuelve codigo proveedor "param"           
-                statusCode = sendGet(param, key);
+                                        try {
+                            obj2 = new JSONParser().parse(fr);
+                            JSONObject job = (JSONObject) obj2;
+                            
+                            String param = (String) job.get("api_id");
+                  
+                            
+                            ValidaData(response, out, param);
+                            
+                            } catch (org.json.simple.parser.ParseException ex) {
+                            Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
+                            throw new ErrorHandlerEx(response, out,"1");
+                                                        }
+                             catch (Exception ex)       {
+                            Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
+                            throw new ErrorHandlerEx(response, out,"1");    
+                                         }  
+                */
                 
-                } catch (NumberFormatException e ) {
-                Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, e);
-                throw new ErrorHandlerEx( response, out, 400 );
+              
+                statusCode = sendGet(param, key, url1, "1" );
+                
+                } catch (NumberFormatException e ) {                                                     //base de datos
+                Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, e);                     //base de datos
+                throw new ErrorHandlerEx( response, out, 400 );                                          //base de datos
                                        }
-                catch (Exception ex) {
-                Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
-                response.setStatus(204);
-                throw new ErrorHandlerEx( response, out, 204 );
+                catch (Exception ex) {                                                                   //base de datos
+                Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);                    //base de datos
+                response.setStatus(204);                                                                 //base de datos
+                throw new ErrorHandlerEx( response, out, 204 );                                          //base de datos
                                        }
                              
                              
-        session.getTransaction().commit();    
+        session.getTransaction().commit();                                                               //base de datos
         
             // urlImagen = busco id ( API FUTBOL ) del equipo en la base         
             // String urlImagen = eq.getLogo_url();
@@ -123,7 +150,7 @@ public class Futbol extends HttpServlet {
 
                 // parseo JSON devuelto por SPORT API
                 
-                Object obj; 
+                 
                 obj = new JSONParser().parse(new FileReader(home + "/API/web/WEB-INF/file.json"));
                 JSONObject jo = (JSONObject) obj;
                 
@@ -375,16 +402,25 @@ public class Futbol extends HttpServlet {
     }    
         
     
-     	// HTTP GET request
-        public int sendGet(String p, String k) throws Exception {
+     	// HTTP GET request API SPORT / API Cristian
+        public int sendGet(String p, String k, String ur, String num) throws Exception {
 
 		int status;
-                String url = "https://allsportsapi.com/api/football/?&met=Teams&teamId=";
-                FileWriter fwtr2 = new FileWriter(home + "/API/web/WEB-INF/file.json");
-                            
-             
+                String url = ur ; 
+                FileWriter fwtr2;
                 String urlParam = url + p ;
-                String urlComp = urlParam + k ;
+                String urlComp = "";
+                
+                if ( num.equals("1")) {
+                    fwtr2 = new FileWriter(home + "/API/web/WEB-INF/file.json");
+                    urlComp = urlParam + k ; 
+                                      }
+                else  {
+                    fwtr2 = new FileWriter(home + "/API/web/WEB-INF/file2.json");    
+                    urlComp = urlParam ; 
+                      }
+             
+                
                 String line2="";
                 
 		HttpClient client = new DefaultHttpClient();
@@ -416,6 +452,8 @@ public class Futbol extends HttpServlet {
                 return status;
 	}
     
+                
+        
         // Implementacion metodo para leer body del POST request
         public static String getBody(HttpServletRequest request) throws IOException {
 

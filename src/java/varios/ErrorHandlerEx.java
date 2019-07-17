@@ -27,7 +27,7 @@ public class ErrorHandlerEx extends Exception {
     
     public ErrorHandlerEx(HttpServletResponse res, PrintWriter salida) {
         
-        salida.println("{\"codigo\":\"400\",\"respuesta\":\"algunos de los campos requeridos no tiene valor\"}");
+        salida.println("{\"respuesta\":\"algunos de los campos requeridos no tiene valor\"}");
         res.setStatus(400);
         msg = "falla debido a campos con valor nulo";
     }   
@@ -35,13 +35,13 @@ public class ErrorHandlerEx extends Exception {
     public ErrorHandlerEx(HttpServletResponse res, PrintWriter salida, String valor) {
         
         if ( valor.equals("1")) {
-        salida.println("{\"codigo\":\"400\",\"respuesta\":\"falla al paresear el JSON, Revice la estructura\"}");
+        salida.println("{\"respuesta\":\"falla al paresear el JSON, Revice la estructura\"}");
         res.setStatus(400);
         msg = "falla al paresear el JSON";
                                 }
         else {
-        salida.println("{\"codigo\":\"503\",\"respuesta\":\"servicio no disponible\"}");
-        res.setStatus(503);
+        salida.println("{\"respuesta\":\"no se encuentra el equipo\"}");
+        res.setStatus(400);
         msg = "query devuelve valor nulo";    
         }
     } 

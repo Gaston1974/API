@@ -74,11 +74,12 @@ public class Futbol extends HttpServlet {
         String key = "&APIkey=3181aba25e0ededb5fa60883bd351da54315e3395abfbee8ab8cf6f768c63751"; 
         String rutaArchivo = home + "/API/web/WEB-INF/jugadores.json" ;
         String url1 = "https://allsportsapi.com/api/football/?&met=Teams&teamId=";
-        String url2 = "http:/ip:3000/api/equipo/:id_equipo?id_equipo=";
-        Object obj,obj2;         
+        String url2 = "http://10.0.4.166:3000/api/equipo/";
+        Object obj,obj2;      
         String urlPattern = request.getPathInfo(); 
         String regex = ".*/jugadores.*";
-
+        String param = "";
+        
         boolean matches = Pattern.matches(regex, urlPattern);
     
         String [] equipo = urlPattern.split("/");
@@ -86,36 +87,44 @@ public class Futbol extends HttpServlet {
         
         fwtr1 = new FileWriter(rutaArchivo);
               
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();                             //base de datos
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();                             //base de datos - API Cristian
                                                                                     
-        session.beginTransaction();                                                                          //base de datos
+        session.beginTransaction();                                                                          //base de datos - API Cristian
         
 
                 System.out.println("Testing 1 - Send Http GET request");
                    
                 // param = busco id ( proveedor ) del equipo en la base de datos propia o en la API de Cristian
                 
-                try {                                                                                        //base de datos
-                int opc = Integer.parseInt(opcion);                                                          //base de datos
+                try {                                                                                        //base de datos - API Cristian
+                int opc = Integer.parseInt(opcion);                                                          //base de datos - API Cristian
                     
                                     
-                eq = (Fequipo) session.getNamedQuery("Select_equipoId").setInteger(0, opc).uniqueResult();   //base de datos
-                String param = eq.getApi_id();                                                               //base de datos
+                eq = (Fequipo) session.getNamedQuery("Select_equipoId").setInteger(0, opc).uniqueResult();   //base de datos - API Cristian
+                String id_cristian = eq.getId_cristian();                                                    //base de datos - API Cristian
                                
          
-                /*
-                            statusCode = sendGet(opcion, key, url2, "2" );
+                
+                            statusCode = sendGet(id_cristian, key, url2, "2" );
                             FileReader fr = new FileReader (home + "/API/web/WEB-INF/file2.json");
                 
-                                        try {
+                try {
                             obj2 = new JSONParser().parse(fr);
                             JSONObject job = (JSONObject) obj2;
+                         
+                                                                                    //Iterator<Map.Entry> itr0 ;
+                                                                                    //Iterator<Map.Entry> itr5 ;
+                            if ( statusCode != 200 ) 
+                            throw new ErrorHandlerEx(response, out, statusCode);
+                            else {
+                            JSONObject ja2 = (JSONObject) job.get("data"); 
+                                                                                    //itr0 = ja2.iterator(); 
+                            param = (String) ja2.get("api_id").toString();
                             
-                            String param = (String) job.get("api_id");
-                  
-                            
+                                                                                                
+                                }
                             ValidaData(response, out, param);
-                            
+                                
                             } catch (org.json.simple.parser.ParseException ex) {
                             Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
                             throw new ErrorHandlerEx(response, out,"1");
@@ -124,23 +133,22 @@ public class Futbol extends HttpServlet {
                             Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);
                             throw new ErrorHandlerEx(response, out,"1");    
                                          }  
-                */
+                
                 
               
-                statusCode = sendGet(param, key, url1, "1" );
+                statusCode = sendGet( param, key, url1, "1" );
                 
-                } catch (NumberFormatException e ) {                                                     //base de datos
-                Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, e);                     //base de datos
-                throw new ErrorHandlerEx( response, out, 400 );                                          //base de datos
+                } catch (NumberFormatException e ) {                                                     
+                throw new ErrorHandlerEx( response, out, 400 );                                          
                                        }
-                catch (Exception ex) {                                                                   //base de datos
-                Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);                    //base de datos
-                response.setStatus(204);                                                                 //base de datos
-                throw new ErrorHandlerEx( response, out, 204 );                                          //base de datos
+                catch (Exception ex) {                                                                   
+                Logger.getLogger(Futbol.class.getName()).log(Level.SEVERE, null, ex);                    
+                response.setStatus(204);                                                                 
+                throw new ErrorHandlerEx( response, out, 204 );                                          
                                        }
                              
                              
-        session.getTransaction().commit();                                                               //base de datos
+        session.getTransaction().commit();                                                               
         
             // urlImagen = busco id ( API FUTBOL ) del equipo en la base         
             // String urlImagen = eq.getLogo_url();

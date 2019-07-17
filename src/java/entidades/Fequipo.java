@@ -51,6 +51,9 @@ public class Fequipo implements Serializable {
     @Basic(optional = true)
     @Column(name = "status")
     private String status;
+     @Basic(optional = true)
+    @Column(name = "id_api_cristian")
+    private String id_cristian;
     
     
 public Fequipo () {
@@ -114,6 +117,10 @@ public Fequipo () {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getId_cristian() {
+        return id_cristian;
     }
 
 

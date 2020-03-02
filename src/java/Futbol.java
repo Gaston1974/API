@@ -92,12 +92,14 @@ public class Futbol extends HttpServlet {
         session.beginTransaction();                                                                          //base de datos - API Cristian
         
 
-                System.out.println("Testing 1 - Send Http GET request");
+        System.out.println("Testing 1 - Send Http GET request");
                    
                 // param = busco id ( proveedor ) del equipo en la base de datos propia o en la API de Cristian
                 
                 try {                                                                                        //base de datos - API Cristian
+                /*
                 int opc = Integer.parseInt(opcion);                                                          //base de datos - API Cristian
+                
                     
                                     
                 eq = (Fequipo) session.getNamedQuery("Select_equipoId").setInteger(0, opc).uniqueResult();   //base de datos - API Cristian
@@ -134,9 +136,10 @@ public class Futbol extends HttpServlet {
                             throw new ErrorHandlerEx(response, out,"1");    
                                          }  
                 
-                
+                */
               
-                statusCode = sendGet( param, key, url1, "1" );
+                //statusCode = sendGet( param, key, url1, "1" );
+                statusCode = sendGet( "2617", key, url1, "1" );
                 
                 } catch (NumberFormatException e ) {                                                     
                 throw new ErrorHandlerEx( response, out, 400 );                                          
